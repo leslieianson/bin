@@ -1,0 +1,9 @@
+#!/bin/bash
+
+for i in $(pacman -Qg | awk '{print $1}' | sort | uniq); do
+  echo "${i} $(pacman -Qg ${i} | wc -l) of $(pacman -Sg ${i} | wc -l)"
+  if [ $(comm -3 <(pacman -Sgq ${i} | sort) <(pacman -Qgq ${i} | sort) | wc -l) -gt 0 ]; then
+    echo "not installed: $(comm -3 <(pacman -Sgq ${i} | sort) <(pacman -Qgq ${i} | sort) | awk '{sub(/^[ \t]+/, "")};1' | awk 1 ORS=' ')"
+  fi
+    echo
+done
